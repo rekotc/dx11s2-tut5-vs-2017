@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\applicationclass.cpp" />
+    <ClCompile Include="src\cameraclass.cpp" />
+    <ClCompile Include="src\colorshaderclass.cpp" />
+    <ClCompile Include="src\config.cpp" />
+    <ClCompile Include="src\d3dclass.cpp" />
+    <ClCompile Include="src\fontclass.cpp" />
+    <ClCompile Include="src\fontshaderclass.cpp" />
+    <ClCompile Include="src\fpsclass.cpp" />
+    <ClCompile Include="src\graphicsclass.cpp" />
+    <ClCompile Include="src\inputclass.cpp" />
+    <ClCompile Include="src\lightclass.cpp" />
+    <ClCompile Include="src\lightshaderclass.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\modelclass.cpp" />
+    <ClCompile Include="src\positionclass.cpp" />
+    <ClCompile Include="src\shadermanagerclass.cpp" />
+    <ClCompile Include="src\skydomeclass.cpp" />
+    <ClCompile Include="src\skydomeshaderclass.cpp" />
+    <ClCompile Include="src\systemclass.cpp" />
+    <ClCompile Include="src\terrainclass.cpp" />
+    <ClCompile Include="src\textclass.cpp" />
+    <ClCompile Include="src\textureclass.cpp" />
+    <ClCompile Include="src\texturemanagerclass.cpp" />
+    <ClCompile Include="src\textureshaderclass.cpp" />
+    <ClCompile Include="src\timerclass.cpp" />
+    <ClCompile Include="src\userinterfaceclass.cpp" />
+    <ClCompile Include="src\zoneclass.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\applicationclass.h" />
+    <ClInclude Include="src\cameraclass.h" />
+    <ClInclude Include="src\colorshaderclass.h" />
+    <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\d3dclass.h" />
+    <ClInclude Include="src\fontclass.h" />
+    <ClInclude Include="src\fontshaderclass.h" />
+    <ClInclude Include="src\fpsclass.h" />
+    <ClInclude Include="src\graphicsclass.h" />
+    <ClInclude Include="src\inputclass.h" />
+    <ClInclude Include="src\lightclass.h" />
+    <ClInclude Include="src\lightshaderclass.h" />
+    <ClInclude Include="src\modelclass.h" />
+    <ClInclude Include="src\positionclass.h" />
+    <ClInclude Include="src\shadermanagerclass.h" />
+    <ClInclude Include="src\skydomeclass.h" />
+    <ClInclude Include="src\skydomeshaderclass.h" />
+    <ClInclude Include="src\systemclass.h" />
+    <ClInclude Include="src\terrainclass.h" />
+    <ClInclude Include="src\textclass.h" />
+    <ClInclude Include="src\textureclass.h" />
+    <ClInclude Include="src\texturemanagerclass.h" />
+    <ClInclude Include="src\textureshaderclass.h" />
+    <ClInclude Include="src\timerclass.h" />
+    <ClInclude Include="src\userinterfaceclass.h" />
+    <ClInclude Include="src\zoneclass.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{8D96D923-2C59-4181-A31B-BFF642C6CC33}</ProjectGuid>
+    <RootNamespace>dx11s2tut5vs2017</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
