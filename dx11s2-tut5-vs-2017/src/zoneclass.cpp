@@ -12,6 +12,10 @@ ZoneClass::ZoneClass()
 	m_Position = 0;
 	m_Terrain = 0;
 	m_SkyDome = 0;
+	m_Frustum = 0;
+	m_mouseX = 0;
+	m_mouseY = 0;
+	m_Bitmap = 0;
 }
 
 
@@ -77,8 +81,19 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	// Set the initial position and rotation.
-	m_Position->SetPosition(128.0f, 10.0f, -10.0f);
-	m_Position->SetRotation(0.0f, 0.0f, 0.0f);
+	m_Position->SetPosition(110.0f, 30.0f, 408.0f);
+	m_Position->SetRotation(0.0f, 103.0f, 0.0f);
+
+	// Create the frustum object.
+	m_Frustum = new FrustumClass;
+	if (!m_Frustum)
+	{
+		return false;
+	}
+
+	// Initialize the frustum object.
+	m_Frustum->Initialize(screenDepth);
+
 
 	// Create the sky dome object.
 	m_SkyDome = new SkyDomeClass;
@@ -108,17 +123,44 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		MessageBox(hwnd, L"Could not initialize the terrain object.", L"Error", MB_OK);
 		return false;
 	}
+
+	// Create the bitmap object.
+	m_Bitmap = new BitmapClass;
+	if (!m_Bitmap)
+	{
+		return false;
+	}
+
+	// Initializza il cursore del MOUSE
+	result = m_Bitmap->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(),screenWidth, screenHeight, "Engine/data/textures/mouse32.tga", 32, 32);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the mouse bitmap object.", L"Error", MB_OK);
+		return false;
+	}
 	
 	// Set the UI to display by default.
 	m_displayUI = true;
 	// Set wire frame rendering initially to enabled.
-	m_wireFrame = true;
+	m_wireFrame = false;
+
+	// Set the rendering of cell lines initially to enabled.
+	m_cellLines = true;
+
 	return true;
 }
 
 
 void ZoneClass::Shutdown()
 {
+	// Release the bitmap object.
+	if (m_Bitmap)
+	{
+		m_Bitmap->Shutdown();
+		delete m_Bitmap;
+		m_Bitmap = 0;
+	}
+
 	// Release the terrain object.
 	if(m_Terrain)
 	{
@@ -133,6 +175,13 @@ void ZoneClass::Shutdown()
 		m_SkyDome->Shutdown();
 		delete m_SkyDome;
 		m_SkyDome = 0;
+	}
+
+	// Release the frustum object.
+	if (m_Frustum)
+	{
+		delete m_Frustum;
+		m_Frustum = 0;
 	}
 
 	// Release the position object.
@@ -164,6 +213,8 @@ void ZoneClass::Shutdown()
 		m_UserInterface = 0;
 	}
 
+
+
 	return;
 }
 
@@ -173,6 +224,8 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 	bool result;
 	float posX, posY, posZ, rotX, rotY, rotZ;
 
+	//acquisisco le coordinate correnti del mouse
+	Input->GetMouseLocation(m_mouseX,m_mouseY);
 
 	// Do the frame input processing.
 	HandleMovementInput(Input, frameTime);
@@ -187,6 +240,9 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 	{
 		return false;
 	}
+
+	// Do the terrain frame processing.
+	m_Terrain->Frame();
 
 	// Render the graphics.
 	result = Render(Direct3D, ShaderManager, TextureManager);
@@ -253,6 +309,12 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 		m_wireFrame = !m_wireFrame;
 	}
 
+	// Determine if we should render the lines around each terrain cell.
+	if (Input->IsF3Toggled())
+	{
+		m_cellLines = !m_cellLines;
+	}
+
 	return;
 }
 
@@ -262,7 +324,8 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
 	bool result;
 	XMFLOAT3 cameraPosition;
-	
+	int i;
+
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
 
@@ -275,6 +338,9 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	
 	// Get the position of the camera.
 	cameraPosition = m_Camera->GetPosition();
+
+	// Construct the frustum.
+	m_Frustum->ConstructFrustum(projectionMatrix, viewMatrix);
 
 	// Clear the buffers to begin the scene.
 	Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
@@ -308,22 +374,48 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 		Direct3D->EnableWireframe();
 	}
 
-	// Render the terrain grid using the color shader.
-	m_Terrain->Render(Direct3D->GetDeviceContext());
-	//result = ShaderManager->RenderTextureShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
-	//	projectionMatrix, TextureManager->GetTexture(0));
-	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
-		projectionMatrix, TextureManager->GetTexture(1), m_Light->GetDirection(),
-		m_Light->GetDiffuseColor());
-	if(!result)
+	// Render the terrain cells (and cell lines if needed).
+	for (i = 0; i < m_Terrain->GetCellCount(); i++)
 	{
-		return false;
+		// Render each terrain cell if it is visible only.
+		result = m_Terrain->RenderCell(Direct3D->GetDeviceContext(), i, m_Frustum);
+		if (result)
+		{
+			// Render the cell buffers using the terrain shader.
+			result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
+				projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
+				m_Light->GetDirection(), m_Light->GetDiffuseColor());
+			if (!result)
+			{
+				return false;
+			}
+
+			// If needed then render the bounding box around this terrain cell using the color shader. 
+			if (m_cellLines)
+			{
+				m_Terrain->RenderCellLines(Direct3D->GetDeviceContext(), i);
+				ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellLinesIndexCount(i), worldMatrix,
+					viewMatrix, projectionMatrix);
+				if (!result)
+				{
+					return false;
+				}
+			}
+		}
 	}
 
 	// Turn off wire frame rendering of the terrain if it was on.
 	if (m_wireFrame)
 	{
 		Direct3D->DisableWireframe();
+	}
+
+	// Update the render counts in the UI.
+	result = m_UserInterface->UpdateRenderCounts(Direct3D->GetDeviceContext(), m_Terrain->GetRenderCount(), m_Terrain->GetCellsDrawn(),
+		m_Terrain->GetCellsCulled());
+	if (!result)
+	{
+		return false;
 	}
 
 	// Render the user interface.
@@ -336,6 +428,25 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 		}
 	}
 
+	//TODO renderizza il cursore del mouse
+	// Turn off the Z buffer to begin all 2D rendering.
+	Direct3D->TurnZBufferOff();	
+	Direct3D->EnableAlphaBlending();
+	// Put the bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	result = m_Bitmap->Render(Direct3D->GetDeviceContext(), m_mouseX, m_mouseY);
+	if (!result)
+	{
+		return false;
+	}
+	// Render the bitmap with the texture shader.
+	result = ShaderManager->RenderTextureShader(Direct3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix, m_Bitmap->GetTexture());
+	if (!result)
+	{
+		return false;
+	}	   
+	// Turn the Z buffer back on now that all 2D rendering has completed.
+	Direct3D->TurnZBufferOn();
+	Direct3D->DisableAlphaBlending();
 	// Present the rendered scene to the screen.
 	Direct3D->EndScene();
 

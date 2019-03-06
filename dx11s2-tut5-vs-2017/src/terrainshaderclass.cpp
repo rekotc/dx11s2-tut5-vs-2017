@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: lightshaderclass.cpp
+// Filename: terrainshaderclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
-#include "lightshaderclass.h"
+#include "terrainshaderclass.h"
 
 
-LightShaderClass::LightShaderClass()
+TerrainShaderClass::TerrainShaderClass()
 {
 	m_vertexShader = 0;
 	m_pixelShader = 0;
@@ -15,24 +15,24 @@ LightShaderClass::LightShaderClass()
 }
 
 
-LightShaderClass::LightShaderClass(const LightShaderClass& other)
+TerrainShaderClass::TerrainShaderClass(const TerrainShaderClass& other)
 {
 }
 
 
-LightShaderClass::~LightShaderClass()
+TerrainShaderClass::~TerrainShaderClass()
 {
 }
 
 
-bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool TerrainShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"Engine/data/shaders/light.vs", L"Engine/data/shaders/light.ps");
-	if (!result)
+	result = InitializeShader(device, hwnd, L"Engine/data/shaders/terrain.vs", L"Engine/data/shaders/terrain.ps");
+	if(!result)
 	{
 		return false;
 	}
@@ -41,7 +41,7 @@ bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 }
 
 
-void LightShaderClass::Shutdown()
+void TerrainShaderClass::Shutdown()
 {
 	// Shutdown the vertex and pixel shaders as well as the related objects.
 	ShutdownShader();
@@ -50,15 +50,17 @@ void LightShaderClass::Shutdown()
 }
 
 
-bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor)
+bool TerrainShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* normalMap,
+	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor)
 {
+
 	bool result;
 
 
 	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, lightDirection, diffuseColor);
-	if (!result)
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, normalMap, lightDirection, diffuseColor); 
+	if(!result)
 	{
 		return false;
 	}
@@ -70,13 +72,13 @@ bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount
 }
 
 
-bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
+bool TerrainShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
 	ID3D10Blob* vertexShaderBuffer;
 	ID3D10Blob* pixelShaderBuffer;
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[6];
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -89,12 +91,12 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 	pixelShaderBuffer = 0;
 
 	// Compile the vertex shader code.
-	result = D3DCompileFromFile(vsFilename, NULL, NULL, "LightVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
-		&vertexShaderBuffer, &errorMessage);
-	if (FAILED(result))
+	result = D3DCompileFromFile(vsFilename, NULL, NULL, "TerrainVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
+				    &vertexShaderBuffer, &errorMessage);
+	if(FAILED(result))
 	{
 		// If the shader failed to compile it should have writen something to the error message.
-		if (errorMessage)
+		if(errorMessage)
 		{
 			OutputShaderErrorMessage(errorMessage, hwnd, vsFilename);
 		}
@@ -108,12 +110,12 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 	}
 
 	// Compile the pixel shader code.
-	result = D3DCompileFromFile(psFilename, NULL, NULL, "LightPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
-		&pixelShaderBuffer, &errorMessage);
-	if (FAILED(result))
+	result = D3DCompileFromFile(psFilename, NULL, NULL, "TerrainPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
+				    &pixelShaderBuffer, &errorMessage);
+	if(FAILED(result))
 	{
 		// If the shader failed to compile it should have writen something to the error message.
-		if (errorMessage)
+		if(errorMessage)
 		{
 			OutputShaderErrorMessage(errorMessage, hwnd, psFilename);
 		}
@@ -128,14 +130,14 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 
 	// Create the vertex shader from the buffer.
 	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
-	if (FAILED(result))
+	if(FAILED(result))
 	{
 		return false;
 	}
 
 	// Create the pixel shader from the buffer.
 	result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
-	if (FAILED(result))
+	if(FAILED(result))
 	{
 		return false;
 	}
@@ -165,13 +167,37 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 	polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[2].InstanceDataStepRate = 0;
 
+	polygonLayout[3].SemanticName = "TANGENT";
+	polygonLayout[3].SemanticIndex = 0;
+	polygonLayout[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[3].InputSlot = 0;
+	polygonLayout[3].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[3].InstanceDataStepRate = 0;
+
+	polygonLayout[4].SemanticName = "BINORMAL";
+	polygonLayout[4].SemanticIndex = 0;
+	polygonLayout[4].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[4].InputSlot = 0;
+	polygonLayout[4].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[4].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[4].InstanceDataStepRate = 0;
+
+	polygonLayout[5].SemanticName = "COLOR";
+	polygonLayout[5].SemanticIndex = 0;
+	polygonLayout[5].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[5].InputSlot = 0;
+	polygonLayout[5].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[5].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[5].InstanceDataStepRate = 0;
+
 	// Get a count of the elements in the layout.
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
 	// Create the vertex input layout.
-	result = device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(),
-		vertexShaderBuffer->GetBufferSize(), &m_layout);
-	if (FAILED(result))
+	result = device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(), 
+					   vertexShaderBuffer->GetBufferSize(), &m_layout);
+	if(FAILED(result))
 	{
 		return false;
 	}
@@ -193,7 +219,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
 	result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
-	if (FAILED(result))
+	if(FAILED(result))
 	{
 		return false;
 	}
@@ -215,7 +241,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 
 	// Create the texture sampler state.
 	result = device->CreateSamplerState(&samplerDesc, &m_sampleState);
-	if (FAILED(result))
+	if(FAILED(result))
 	{
 		return false;
 	}
@@ -228,9 +254,9 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 	lightBufferDesc.MiscFlags = 0;
 	lightBufferDesc.StructureByteStride = 0;
 
-	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
+	// Create the constant buffer pointer so we can access the pixel shader constant buffer from within this class.
 	result = device->CreateBuffer(&lightBufferDesc, NULL, &m_lightBuffer);
-	if (FAILED(result))
+	if(FAILED(result))
 	{
 		return false;
 	}
@@ -239,45 +265,45 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 }
 
 
-void LightShaderClass::ShutdownShader()
+void TerrainShaderClass::ShutdownShader()
 {
 	// Release the light constant buffer.
-	if (m_lightBuffer)
+	if(m_lightBuffer)
 	{
 		m_lightBuffer->Release();
 		m_lightBuffer = 0;
 	}
 
 	// Release the sampler state.
-	if (m_sampleState)
+	if(m_sampleState)
 	{
 		m_sampleState->Release();
 		m_sampleState = 0;
 	}
 
 	// Release the matrix constant buffer.
-	if (m_matrixBuffer)
+	if(m_matrixBuffer)
 	{
 		m_matrixBuffer->Release();
 		m_matrixBuffer = 0;
 	}
 
 	// Release the layout.
-	if (m_layout)
+	if(m_layout)
 	{
 		m_layout->Release();
 		m_layout = 0;
 	}
 
 	// Release the pixel shader.
-	if (m_pixelShader)
+	if(m_pixelShader)
 	{
 		m_pixelShader->Release();
 		m_pixelShader = 0;
 	}
 
 	// Release the vertex shader.
-	if (m_vertexShader)
+	if(m_vertexShader)
 	{
 		m_vertexShader->Release();
 		m_vertexShader = 0;
@@ -287,7 +313,7 @@ void LightShaderClass::ShutdownShader()
 }
 
 
-void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const WCHAR* shaderFilename)
+void TerrainShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const WCHAR* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long long bufferSize, i;
@@ -304,7 +330,7 @@ void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 	fout.open("shader-error.txt");
 
 	// Write out the error message.
-	for (i = 0; i < bufferSize; i++)
+	for(i=0; i<bufferSize; i++)
 	{
 		fout << compileErrors[i];
 	}
@@ -323,9 +349,9 @@ void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 }
 
 
-bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection,
-	XMFLOAT4 diffuseColor)
+bool TerrainShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* normalMap,
+	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -341,7 +367,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 
 	// Lock the constant buffer so it can be written to.
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result))
+	if(FAILED(result))
 	{
 		return false;
 	}
@@ -365,10 +391,12 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 
 	// Set shader texture resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(1, 1, &normalMap);
 
+	
 	// Lock the light constant buffer so it can be written to.
 	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result))
+	if(FAILED(result))
 	{
 		return false;
 	}
@@ -394,19 +422,19 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 }
 
 
-void LightShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+void TerrainShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	// Set the vertex input layout.
 	deviceContext->IASetInputLayout(m_layout);
 
-	// Set the vertex and pixel shaders that will be used to render this triangle.
+	// Set the vertex and pixel shaders that will be used to render.
 	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
 	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
 
 	// Set the sampler state in the pixel shader.
 	deviceContext->PSSetSamplers(0, 1, &m_sampleState);
 
-	// Render the triangle.
+	// Render the polygon data.
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
 	return;

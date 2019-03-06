@@ -96,6 +96,18 @@
     <ClCompile Include="src\skydomeshaderclass.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="src\terraincellclass.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\terrainshaderclass.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\frustumclass.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bitmapclass.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cameraclass.h">
@@ -174,6 +186,18 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\skydomeshaderclass.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\terraincellclass.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\terrainshaderclass.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\frustumclass.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bitmapclass.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

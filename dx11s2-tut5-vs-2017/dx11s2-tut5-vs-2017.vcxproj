@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\applicationclass.cpp" />
+    <ClCompile Include="src\bitmapclass.cpp" />
     <ClCompile Include="src\cameraclass.cpp" />
     <ClCompile Include="src\colorshaderclass.cpp" />
     <ClCompile Include="src\config.cpp" />
@@ -27,6 +28,7 @@
     <ClCompile Include="src\fontclass.cpp" />
     <ClCompile Include="src\fontshaderclass.cpp" />
     <ClCompile Include="src\fpsclass.cpp" />
+    <ClCompile Include="src\frustumclass.cpp" />
     <ClCompile Include="src\graphicsclass.cpp" />
     <ClCompile Include="src\inputclass.cpp" />
     <ClCompile Include="src\lightclass.cpp" />
@@ -38,7 +40,9 @@
     <ClCompile Include="src\skydomeclass.cpp" />
     <ClCompile Include="src\skydomeshaderclass.cpp" />
     <ClCompile Include="src\systemclass.cpp" />
+    <ClCompile Include="src\terraincellclass.cpp" />
     <ClCompile Include="src\terrainclass.cpp" />
+    <ClCompile Include="src\terrainshaderclass.cpp" />
     <ClCompile Include="src\textclass.cpp" />
     <ClCompile Include="src\textureclass.cpp" />
     <ClCompile Include="src\texturemanagerclass.cpp" />
@@ -49,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\applicationclass.h" />
+    <ClInclude Include="src\bitmapclass.h" />
     <ClInclude Include="src\cameraclass.h" />
     <ClInclude Include="src\colorshaderclass.h" />
     <ClInclude Include="src\config.h" />
@@ -56,6 +61,7 @@
     <ClInclude Include="src\fontclass.h" />
     <ClInclude Include="src\fontshaderclass.h" />
     <ClInclude Include="src\fpsclass.h" />
+    <ClInclude Include="src\frustumclass.h" />
     <ClInclude Include="src\graphicsclass.h" />
     <ClInclude Include="src\inputclass.h" />
     <ClInclude Include="src\lightclass.h" />
@@ -66,7 +72,9 @@
     <ClInclude Include="src\skydomeclass.h" />
     <ClInclude Include="src\skydomeshaderclass.h" />
     <ClInclude Include="src\systemclass.h" />
+    <ClInclude Include="src\terraincellclass.h" />
     <ClInclude Include="src\terrainclass.h" />
+    <ClInclude Include="src\terrainshaderclass.h" />
     <ClInclude Include="src\textclass.h" />
     <ClInclude Include="src\textureclass.h" />
     <ClInclude Include="src\texturemanagerclass.h" />
@@ -99,7 +107,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>

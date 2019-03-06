@@ -17,8 +17,10 @@
 #include "cameraclass.h"
 #include "lightclass.h"
 #include "positionclass.h"
+#include "frustumclass.h"
 #include "terrainclass.h"
 #include "skydomeclass.h"
+#include "bitmapclass.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,9 +46,16 @@ private:
 	CameraClass* m_Camera;
 	LightClass* m_Light;
 	PositionClass* m_Position;
+	FrustumClass* m_Frustum;
 	TerrainClass* m_Terrain;
 	SkyDomeClass* m_SkyDome;
 	bool m_displayUI, m_wireFrame;
+
+	bool m_cellLines;
+
+	int m_mouseX, m_mouseY;
+
+	BitmapClass* m_Bitmap;
 };
 
 #endif
