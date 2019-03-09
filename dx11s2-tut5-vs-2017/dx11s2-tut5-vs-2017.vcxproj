@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\animatedmodelclass.cpp" />
+    <ClCompile Include="src\animatedmodelshaderclass.cpp" />
     <ClCompile Include="src\applicationclass.cpp" />
     <ClCompile Include="src\bitmapclass.cpp" />
     <ClCompile Include="src\cameraclass.cpp" />
@@ -52,6 +54,8 @@
     <ClCompile Include="src\zoneclass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\animatedmodelclass.h" />
+    <ClInclude Include="src\animatedmodelshaderclass.h" />
     <ClInclude Include="src\applicationclass.h" />
     <ClInclude Include="src\bitmapclass.h" />
     <ClInclude Include="src\cameraclass.h" />

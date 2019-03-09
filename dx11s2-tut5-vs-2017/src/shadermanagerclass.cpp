@@ -114,6 +114,20 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
+	// Create the 3d model shader object.
+	m_AnimatedModelShader = new AnimatedModelShaderClass;
+	if (!m_AnimatedModelShader)
+	{
+		return false;
+	}
+
+	// Initialize the 3d model shader object.
+	result = m_AnimatedModelShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -168,6 +182,14 @@ void ShaderManagerClass::Shutdown()
 		m_ColorShader = 0;
 	}
 
+	// Release the 3d model shader object.
+	if (m_AnimatedModelShader)
+	{
+		m_AnimatedModelShader->Shutdown();
+		delete m_AnimatedModelShader;
+		m_AnimatedModelShader = 0;
+	}
+
 	return;
 }
 
@@ -208,4 +230,10 @@ bool ShaderManagerClass::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext,
 	XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)
 {
 	return m_SkyDomeShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, apexColor, centerColor);
+}
+
+bool ShaderManagerClass::RenderAnimatedModelShader(ID3D11DeviceContext* deviceContext, AnimatedModelClass* model, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+	XMMATRIX projectionMatrix)
+{
+	return m_AnimatedModelShader->Render(deviceContext, model, worldMatrix, viewMatrix, projectionMatrix);
 }

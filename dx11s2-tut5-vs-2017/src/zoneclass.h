@@ -21,6 +21,7 @@
 #include "terrainclass.h"
 #include "skydomeclass.h"
 #include "bitmapclass.h"
+#include "animatedmodelclass.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,6 +50,7 @@ private:
 	FrustumClass* m_Frustum;
 	TerrainClass* m_Terrain;
 	SkyDomeClass* m_SkyDome;
+	AnimatedModelClass* m_AnimatedModel;
 	bool m_displayUI, m_wireFrame;
 
 	bool m_cellLines;

@@ -16,6 +16,7 @@ ZoneClass::ZoneClass()
 	m_mouseX = 0;
 	m_mouseY = 0;
 	m_Bitmap = 0;
+	m_AnimatedModel = 0;
 }
 
 
@@ -138,6 +139,21 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		MessageBox(hwnd, L"Could not initialize the mouse bitmap object.", L"Error", MB_OK);
 		return false;
 	}
+
+	
+	m_AnimatedModel = new AnimatedModelClass();
+	if (!m_AnimatedModel)
+	{
+		return false;
+	}
+
+	
+	result = m_AnimatedModel->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), NULL, NULL, 0, 0);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the animated model object.", L"Error", MB_OK);
+		return false;
+	}
 	
 	// Set the UI to display by default.
 	m_displayUI = true;
@@ -153,6 +169,15 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 void ZoneClass::Shutdown()
 {
+
+	// Release the animated object.
+	if (m_AnimatedModel)
+	{
+		m_AnimatedModel->Shutdown();
+		delete m_AnimatedModel;
+		m_AnimatedModel = 0;
+	}
+
 	// Release the bitmap object.
 	if (m_Bitmap)
 	{
@@ -402,6 +427,15 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 				}
 			}
 		}
+	}
+
+	//renderizza il modello 3d
+	m_AnimatedModel->Render(Direct3D->GetDeviceContext());
+	ShaderManager->RenderAnimatedModelShader(Direct3D->GetDeviceContext(), m_AnimatedModel, worldMatrix,
+		viewMatrix, projectionMatrix);
+	if (!result)
+	{
+		return false;
 	}
 
 	// Turn off wire frame rendering of the terrain if it was on.

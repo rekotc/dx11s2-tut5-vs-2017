@@ -15,6 +15,7 @@
 #include "fontshaderclass.h"
 #include "skydomeshaderclass.h"
 #include "terrainshaderclass.h"
+#include "animatedmodelshaderclass.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +38,7 @@ public:
 	bool RenderTerrainShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, ID3D11ShaderResourceView*,
 		XMFLOAT3, XMFLOAT4); 
 	bool RenderSkyDomeShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT4, XMFLOAT4);
+	bool RenderAnimatedModelShader(ID3D11DeviceContext*, AnimatedModelClass*, XMMATRIX, XMMATRIX, XMMATRIX);
 
 private:
 	ColorShaderClass* m_ColorShader;
@@ -45,6 +47,7 @@ private:
 	FontShaderClass* m_FontShader;
 	TerrainShaderClass* m_TerrainShader;
 	SkyDomeShaderClass* m_SkyDomeShader;
+	AnimatedModelShaderClass* m_AnimatedModelShader;
 };
 
 #endif

@@ -108,6 +108,12 @@
     <ClCompile Include="src\bitmapclass.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="src\animatedmodelclass.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animatedmodelshaderclass.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cameraclass.h">
@@ -198,6 +204,12 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\bitmapclass.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animatedmodelclass.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animatedmodelshaderclass.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
